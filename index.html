@@ -84,7 +84,7 @@ button { font: inherit; color: inherit; }
 /* 路線圖 */
 .line { position: relative; overflow-x: auto; scrollbar-width: thin; }
 .line ol { position: relative; display: flex; width: max-content; min-width: 100%; list-style: none; margin: 0; padding: 0 0 6px; }
-.line ol::before { content: ""; position: absolute; left: 28px; right: 28px; top: 16px; height: 3px; background: var(--accent); }
+.line ol::before { content: ""; position: absolute; left: calc(100% / 16); right: calc(100% / 16); top: 16px; height: 3px; background: var(--accent); }
 .line li { flex: 1 0 76px; display: flex; justify-content: center; }
 .line li.term { flex: 0 0 56px; }
 .stop { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 4px 4px; background: none; border: 0; }
@@ -114,7 +114,7 @@ button { touch-action: manipulation; }
 .stop[aria-current] .date { color: var(--ink); }
 
 /* 站名牌 */
-.day { display: flex; flex-direction: column; gap: 18px; scroll-margin-top: 16px; }
+.day { display: flex; flex-direction: column; gap: 18px; scroll-margin-top: 72px; }
 .sign {
   --cap: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 16' preserveAspectRatio='none'%3E%3Cpath d='M0 16C2 10 8 8 14 9C22 4 34 4 42 8C52 3 66 3 76 7C88 2 102 3 112 8C124 4 138 3 148 7C160 2 176 3 186 8C196 4 210 4 220 8C228 6 236 9 240 16Z'/%3E%3C/svg%3E");
   position: relative; background: var(--sign-bg); color: var(--sign-ink); border: 1px solid var(--sign-edge); border-radius: 6px; text-align: center;
@@ -131,6 +131,11 @@ button { touch-action: manipulation; }
 .sign-head .sd { font-size: 14px; font-weight: 500; }
 .sign-name { margin: 0; padding: 2px 16px 0; font-size: clamp(40px, 11vw, 66px); font-weight: 900; line-height: 1.15; letter-spacing: .1em; text-wrap: balance; }
 .sign-roma { margin: 0; padding: 0 16px 14px; font-family: var(--font-num); font-size: 19px; font-weight: 600; letter-spacing: .12em; color: var(--sign-muted); }
+.sign-wx { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 2px 16px; margin-top: -4px; padding: 0 16px 12px; font-size: 15px; color: var(--sign-ink); }
+.sign-wx .w { white-space: nowrap; }
+.sign-wx .w b { margin-right: 6px; font-weight: 700; color: var(--sign-muted); }
+.sign-wx .num { font-size: 18px; font-weight: 600; }
+.sign-wx .src { flex-basis: 100%; font-size: 12px; color: var(--sign-muted); }
 .sign-band { display: grid; grid-template-columns: 1fr 1fr; background: var(--sign-band); color: var(--sign-band-ink); border-radius: 0 0 5px 5px; }
 .sign-band button { background: none; border: 0; padding: 10px 16px; font-size: 16px; font-weight: 700; cursor: pointer; }
 .sign-band button:first-child { text-align: left; }
@@ -157,6 +162,9 @@ button { touch-action: manipulation; }
 .note { font-size: 14px; color: var(--muted); }
 .book { font-size: 13px; font-weight: 700; color: var(--warn); background: var(--warn-soft); padding: 1px 8px; border-radius: 3px; }
 .book.ok { color: var(--accent); background: var(--accent-soft); }
+.pin { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.pin .arr { margin-left: 3px; font-size: .75em; }
+@media (hover: hover) { .pin:hover { text-decoration-thickness: 2px; } }
 .tt li.opt .c { border: 1.5px dashed var(--rule); border-radius: 6px; padding: 8px 12px; }
 .opt-lbl { display: inline-block; margin-right: 8px; padding: 0 6px; font-size: 12px; font-weight: 700; line-height: 1.6; color: var(--muted); border: 1px dashed var(--muted); border-radius: 3px; vertical-align: 2px; }
 .tt li.warn .c { flex-direction: row; gap: 8px; align-items: baseline; background: var(--warn-soft); border-radius: 6px; padding: 8px 12px; font-weight: 500; }
@@ -178,14 +186,24 @@ button { touch-action: manipulation; }
 @media (hover: hover) { .map:hover { text-decoration: underline; text-underline-offset: 3px; } }
 
 /* 頁尾兩區 */
-.summary { display: grid; gap: 28px; padding-top: 8px; border-top: 1px solid var(--rule); }
-@media (min-width: 760px) { .summary { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 40px; } }
-.summary h2 { margin: 16px 0 10px; font-size: 19px; font-weight: 900; letter-spacing: .04em; }
+/* 分頁 */
+.tabs {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 8px); z-index: 10;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px;
+  background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; box-shadow: 0 2px 8px rgba(20, 33, 58, .08);
+}
+.tabs button { padding: 8px 0; border: 0; border-radius: 5px; background: none; font-size: 15px; font-weight: 700; color: var(--muted); cursor: pointer; }
+.tabs button[aria-selected="true"] { background: var(--accent); color: var(--surface); }
+.tabs .cnt { margin-left: 6px; font-family: var(--font-num); font-size: 16px; }
+.tabs .cnt:empty { display: none; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.panel { display: flex; flex-direction: column; gap: 28px; scroll-margin-top: 72px; }
+.panel h2 { margin: 0 0 10px; font-size: 19px; font-weight: 900; letter-spacing: .04em; }
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 15px; }
 th { padding: 6px; text-align: left; font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--muted); border-bottom: 2px solid var(--ink); }
 td { padding: 9px 6px; border-bottom: 1px solid var(--rule); vertical-align: top; }
-th:last-child, td.amt { text-align: right; }
+th.amt, td.amt { text-align: right; }
 td.amt { font-family: var(--font-num); font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 tfoot td { border-bottom: 0; font-weight: 700; }
 tfoot tr:first-child td { border-top: 2px solid var(--ink); }
@@ -220,6 +238,13 @@ tfoot td.amt { font-size: 20px; font-weight: 700; }
     </div>
   </header>
 
+  <nav class="tabs" id="tabs" role="tablist" aria-label="分頁">
+    <button type="button" role="tab" id="tabbtn-plan" data-tab="plan" aria-controls="tab-plan" aria-selected="true">行程</button>
+    <button type="button" role="tab" id="tabbtn-lodging" data-tab="lodging" aria-controls="tab-lodging" aria-selected="false">住宿</button>
+    <button type="button" role="tab" id="tabbtn-todo" data-tab="todo" aria-controls="tab-todo" aria-selected="false">待辦<span class="cnt" id="todoCnt"></span></button>
+  </nav>
+
+  <div class="panel" id="tab-plan" role="tabpanel" aria-labelledby="tabbtn-plan">
   <nav class="line" id="line" aria-label="選擇日期"><ol id="lineList"></ol></nav>
 
   <section class="day" id="day" aria-labelledby="signName">
@@ -227,6 +252,7 @@ tfoot td.amt { font-size: 20px; font-weight: 700; }
       <div class="sign-head"><span class="num" id="signDay"></span><span class="sd" id="signDate"></span></div>
       <h2 class="sign-name" id="signName"></h2>
       <p class="sign-roma" id="signRoma"></p>
+      <div class="sign-wx" id="wx" aria-live="polite"></div>
       <div class="sign-band">
         <button type="button" id="prevBtn"></button>
         <button type="button" id="nextBtn"></button>
@@ -238,19 +264,23 @@ tfoot td.amt { font-size: 20px; font-weight: 700; }
       <aside class="stay" id="stay"></aside>
     </div>
   </section>
+  </div>
 
-  <section class="summary">
+  <section class="panel" id="tab-lodging" role="tabpanel" aria-labelledby="tabbtn-lodging" hidden>
     <div>
       <h2>住宿一覽</h2>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>日期</th><th>飯店</th><th>三人 NT$</th></tr></thead>
+          <thead><tr><th>日期</th><th>飯店</th><th class="amt">三人 NT$</th><th class="amt">三人 ¥</th></tr></thead>
           <tbody id="lodgeBody"></tbody>
           <tfoot id="lodgeFoot"></tfoot>
         </table>
       </div>
     </div>
-    <div class="todo">
+  </section>
+
+  <section class="panel todo" id="tab-todo" role="tabpanel" aria-labelledby="tabbtn-todo" hidden>
+    <div>
       <h2>出發前要辦</h2>
       <ul id="todoList"></ul>
       <p class="fine">勾選只會記在這台裝置的瀏覽器。</p>
@@ -260,72 +290,91 @@ tfoot td.amt { font-size: 20px; font-weight: 700; }
 
 <script>
 const DAYS = [
-  { d: '12/4', w: '五', stop: '仙台', sign: '仙台', roma: 'Sendai', route: '台灣 → 仙台', theme: '',
+  { d: '12/4', w: '五', stop: '仙台', sign: '仙台', roma: 'Sendai', route: '台灣 → 仙台', theme: '', wx: [{ p: '仙台', lat: 38.260, lon: 140.882, hi: 8, lo: 1, sky: '晴天多' }],
     items: [
+      { text: '午餐：桃園機場或機上' },
       { t: '11:50', text: '桃園機場起飛', mode: '航班' },
       { t: '16:00', text: '抵達仙台機場，前往市區' },
       { text: '飯店 check-in、休息' },
-      { text: '仙台車站西口 ハピナ名掛丁商店街', note: '可先在這裡購物' },
-      { text: '晚餐', book: '待訂' }
+      { text: '仙台車站西口 ハピナ名掛丁商店街', note: '可先在這裡購物', map: 'ハピナ名掛丁商店街 仙台' },
+      { text: '晚餐：仙台', book: '待訂' }
     ],
     stay: { name: '仙台大都會飯店', en: 'Hotel Metropolitan Sendai', meal: '不含早餐', bath: '無大浴場／溫泉', twd: 5722 } },
-  { d: '12/5', w: '六', stop: '弘前', sign: '弘前', roma: 'Hirosaki', route: '仙台 → 弘前 → 青森', theme: '蘋果與冬季櫻花',
+  { d: '12/5', w: '六', stop: '弘前', sign: '弘前', roma: 'Hirosaki', route: '仙台 → 弘前 → 青森', theme: '', wx: [{ p: '弘前', lat: 40.607, lon: 140.464, hi: 4, lo: -2, sky: '雨雪天多' }, { p: '青森', lat: 40.829, lon: 140.734, hi: 5, lo: -1, sky: '雨雪天多' }],
     items: [
-      { text: '早餐自理（超商）' },
+      { text: '早餐：自理' },
       { text: '東北新幹線 仙台 → 新青森', mode: '新幹線', book: '11/5 開放訂票' },
-      { text: '新青森取車', mode: '租車', book: '已訂（12/5–8）', ok: true },
-      { text: '弘前公園' },
+      { t: '10:00', text: '新青森取車', mode: '租車', book: '已訂（12/5–8）', ok: true },
+      { text: '午餐：弘前（待定）' },
+      { text: '弘前公園', map: '弘前公園' },
       { t: '傍晚', text: '弘前公園「冬に咲くさくら」冬季櫻花點燈', note: '以 2026/27 年度活動公告為準' },
-      { text: '晚餐：菊富士 本店', note: '推薦帆立の焼き味噌' },
-      { t: '晚上', text: '開車前往青森市', mode: '開車' }
+      { text: '晚餐：菊富士 本店', note: '推薦帆立の焼き味噌', map: '菊富士 本店 弘前' },
+      { t: '晚上', text: '返回青森市區', mode: '開車' }
     ],
-    stay: { name: '青森中央飯店', en: 'Aomori Center Hotel', meal: '含早餐', bath: '有大浴場／溫泉', jpy: 24444, twd: 4932 } },
-  { d: '12/6', w: '日', stop: '酸湯', sign: '八甲田・酸湯', roma: 'Hakkōda · Sukayu', route: '青森 → 八甲田 → 酸湯溫泉', theme: '雪山＋溫泉',
+    stay: { name: '青森中央飯店', en: 'Aomori Center Hotel', meal: '含早餐', bath: '有大浴場／溫泉', jpy: 24444 } },
+  { d: '12/6', w: '日', stop: '酸湯', sign: '八甲田・酸湯', roma: 'Hakkōda · Sukayu', route: '青森 → 八甲田 → 酸湯溫泉', theme: '', wx: [{ p: '酸湯', lat: 40.649, lon: 140.849, hi: -2, lo: -8, sky: '下雪天多' }],
     items: [
+      { text: '早餐：飯店' },
       { t: '09:30', text: '出發往八甲田', mode: '開車' },
-      { t: '10:30', t2: '13:00', text: '八甲田山／八甲田纜車', note: '看天候、纜車運行狀況調整' },
+      { t: '10:30', t2: '13:00', text: '八甲田山／八甲田纜車', note: '看天候、纜車運行狀況調整', map: '八甲田ロープウェー' },
+      { text: '午餐：八甲田（待定）' },
       { t: '14:30', text: '前往酸湯溫泉', mode: '開車' },
-      { text: '酸湯「ヒバ千人風呂」', note: '全木造大浴場' }
+      { text: '酸湯「ヒバ千人風呂」', note: '全木造大浴場', map: '酸ヶ湯温泉' },
+      { text: '晚餐：飯店' }
     ],
-    stay: { name: '酸湯溫泉旅館', en: 'Sukayu Onsen Ryokan', meal: '含早晚餐', bath: '有大浴場／溫泉', jpy: 35211, twd: 7105 } },
-  { d: '12/7', w: '一', stop: '淺蟲', sign: '淺蟲', roma: 'Asamushi', route: '酸湯 → 淺蟲溫泉', theme: '海景＋溫泉＋海鮮',
+    stay: { name: '酸湯溫泉旅館', en: 'Sukayu Onsen Ryokan', meal: '含早晚餐', bath: '有大浴場／溫泉', jpy: 35211 } },
+  { d: '12/7', w: '一', stop: '淺蟲', sign: '淺蟲', roma: 'Asamushi', route: '酸湯 → 淺蟲溫泉', theme: '', wx: [{ p: '淺蟲', lat: 40.897, lon: 140.861, hi: 5, lo: -1, sky: '雨雪天多' }],
     items: [
+      { text: '早餐：飯店' },
       { t: '早上', text: '泡千人風呂' },
-      { kind: 'opt', text: '十和田湖短暫看景、拍照', note: '天候、路況都好才去，封路機率很高' },
-      { text: '淺蟲海岸散策，看陸奧灣' }
+      { kind: 'opt', text: '十和田湖短暫看景、拍照', note: '天候、路況都好才去，封路機率很高', map: '十和田湖' },
+      { text: '午餐：途中（待定）' },
+      { text: '淺蟲海岸散策，看陸奧灣', map: '浅虫温泉 海岸' },
+      { text: '晚餐：飯店' }
     ],
-    stay: { name: '絕景之宿 淺蟲櫻花觀光酒店', en: 'Grand Views Asamushi Sakura Kanko Hotel', meal: '含早晚餐', bath: '有大浴場／溫泉', jpy: 45920, twd: 9266 } },
-  { d: '12/8', w: '二', stop: '銀山', sign: '銀山溫泉', roma: 'Ginzan Onsen', route: '淺蟲 → 仙台 → 銀山溫泉', theme: '雪國古街＋溫泉',
+    stay: { name: '絕景之宿 淺蟲櫻花觀光酒店', en: 'Grand Views Asamushi Sakura Kanko Hotel', meal: '含早晚餐', bath: '有大浴場／溫泉', jpy: 45920 } },
+  { d: '12/8', w: '二', stop: '銀山', sign: '銀山溫泉', roma: 'Ginzan Onsen', route: '淺蟲 → 仙台 → 銀山溫泉', theme: '', wx: [{ p: '銀山', lat: 38.571, lon: 140.530, hi: 4, lo: -2, sky: '雨雪天多' }],
     items: [
       { kind: 'warn', text: '交通約 4 小時，不能太晚出發' },
-      { text: '新青森還車', mode: '租車', book: '已訂（12/5–8）', ok: true },
+      { text: '早餐：飯店' },
+      { t: '09:00', text: '新青森還車', mode: '租車', book: '已訂（12/5–8）', ok: true },
       { text: '東北新幹線 新青森 → 仙台', mode: '新幹線', book: '11/8 開放訂票' },
+      { text: '午餐：移動途中（待定）' },
       { text: 'JR 仙台 → 羽前千歲 → 大石田', mode: 'JR', book: '確認要不要先訂' },
-      { text: '古山閣接駁巴士 → 銀山溫泉', mode: '巴士', book: '需先詢問並預訂' }
+      { text: '古山閣接駁巴士 → 銀山溫泉', mode: '巴士', book: '需先詢問並預訂' },
+      { text: '晚餐：飯店' }
     ],
-    stay: { name: '古山閣', meal: '含早晚餐', bath: '有溫泉', jpy: 79650, twd: 16059, q: '銀山温泉 古山閣' } },
-  { d: '12/9', w: '三', stop: '藏王', sign: '藏王溫泉', roma: 'Zaō Onsen', route: '銀山溫泉 → 藏王溫泉', theme: '樹冰',
+    stay: { name: '古山閣', meal: '含早晚餐', bath: '有溫泉', jpy: 79650, pay: '現金付款', q: '銀山温泉 古山閣' } },
+  { d: '12/9', w: '三', stop: '藏王', sign: '藏王溫泉', roma: 'Zaō Onsen', route: '銀山溫泉 → 藏王溫泉', theme: '', wx: [{ p: '藏王', lat: 38.167, lon: 140.397, hi: 2, lo: -5, sky: '下雪天多', est: true }],
     items: [
-      { t: '上午', text: '銀山溫泉散策、泡湯' },
-      { text: '前往藏王溫泉' },
-      { t: '下午', kind: 'opt', text: '藏王樹冰、搭纜車看雪景', note: '看天候和纜車，天候不好就放棄' },
-      { text: '藏王溫泉街散策、晚餐、泡湯' }
+      { text: '早餐：飯店' },
+      { t: '上午', text: '銀山溫泉散策、泡湯', map: '銀山温泉' },
+      { text: '前往藏王溫泉', mode: 'JR' },
+      { text: '五感の湯接駁車 → 藏王溫泉', mode: '巴士', book: '需先詢問' },
+      { text: '午餐：待定' },
+      { t: '下午', kind: 'opt', text: '藏王樹冰、搭纜車看雪景', note: '看天候和纜車，天候不好就放棄', map: '蔵王ロープウェイ' },
+      { text: '藏王溫泉街散策、泡湯', map: '蔵王温泉' },
+      { text: '晚餐：飯店' }
     ],
-    stay: { name: '藏王溫泉 五感の湯', twd: 9989, q: '蔵王温泉 五感の湯' } },
-  { d: '12/10', w: '四', stop: '仙台', sign: '仙台', roma: 'Sendai', route: '藏王 → 仙台', theme: '',
+    stay: { name: '藏王溫泉 五感の湯', meal: '含早晚餐', twd: 9976, q: '蔵王温泉 五感の湯' } },
+  { d: '12/10', w: '四', stop: '仙台', sign: '仙台', roma: 'Sendai', route: '藏王 → 仙台', theme: '', wx: [{ p: '仙台', lat: 38.260, lon: 140.882, hi: 8, lo: 1, sky: '晴天多' }],
     items: [
-      { t: '上午', text: '藏王溫泉街散策、足湯' },
-      { text: '開車回仙台、還車', mode: '開車' },
-      { t: '下午', text: '仙台車站周邊逛街購物' },
-      { text: '晚餐：海鮮／牛舌' }
+      { text: '早餐：飯店' },
+      { t: '上午', text: '藏王溫泉街散策、足湯', map: '蔵王温泉 足湯' },
+      { text: '五感の湯接駁車（回程）', mode: '巴士', book: '需先詢問' },
+      { text: '返回仙台', mode: 'JR' },
+      { text: '午餐：待定' },
+      { t: '下午', text: '仙台車站周邊逛街購物', map: '仙台駅' },
+      { text: '晚餐：待定' }
     ],
-    stay: { name: '仙台日航都市酒店', twd: 3963, q: 'Hotel JAL City Sendai' } },
-  { d: '12/11', w: '五', stop: '松島', sign: '松島', roma: 'Matsushima', route: '仙台 → 松島 → 台灣', theme: '海灣＋最後一餐',
+    stay: { name: '仙台日航都市酒店', meal: '不含早餐', jpy: 19642, q: 'Hotel JAL City Sendai' } },
+  { d: '12/11', w: '五', stop: '松島', sign: '松島', roma: 'Matsushima', route: '仙台 → 松島 → 台灣', theme: '', wx: [{ p: '松島', lat: 38.371, lon: 141.060, hi: 8, lo: 1, sky: '晴天多' }],
     items: [
+      { text: '早餐：自理' },
       { text: '仙台出發前往松島' },
-      { text: '松島灣散策、五大堂、松島商店街', note: '買伴手禮' },
-      { kind: 'opt', text: '松島灣遊覽船（約 50 分鐘）', note: '看媽媽體力，不舒服就不搭' },
-      { text: '松島海鮮午餐' },
+      { text: '松島灣散策、五大堂、松島商店街', note: '買伴手禮', map: '松島 五大堂' },
+      { kind: 'opt', text: '松島灣遊覽船（約 50 分鐘）', note: '看媽媽體力，不舒服就不搭', map: '松島島巡り観光船' },
+      { text: '午餐：松島海鮮' },
       { t: '12:30', t2: '14:00', text: '離開松島，前往仙台機場' },
       { t: '17:25', text: '仙台機場起飛', mode: '航班' },
       { t: '20:35', text: '抵達桃園', mode: '航班' }
@@ -338,12 +387,23 @@ const TODOS = [
   { id: 'shinkansen-back', text: '訂新幹線 新青森 → 仙台', day: 4, opens: '2026-11-08' },
   { id: 'jr-oishida', text: '確認 JR 仙台 → 大石田要不要先訂', day: 4 },
   { id: 'kozankaku-bus', text: '預約古山閣接駁巴士', day: 4 },
-  { id: 'day1-dinner', text: '訂 Day 1 晚餐', day: 0 }
+  { id: 'zao-shuttle', text: '詢問五感の湯接駁車（Day 6 去程、Day 7 回程）', day: 5 },
+  { id: 'day1-dinner', text: '訂 Day 1 晚餐', day: 0 },
+  { id: 'day2-lunch', text: '確認 Day 2 午餐（弘前）', day: 1 },
+  { id: 'day3-lunch', text: '確認 Day 3 午餐（八甲田）', day: 2 },
+  { id: 'day4-lunch', text: '確認 Day 4 午餐（往淺蟲途中）', day: 3 },
+  { id: 'day5-lunch', text: '確認 Day 5 午餐（移動途中）', day: 4 },
+  { id: 'day6-lunch', text: '確認 Day 6 午餐', day: 5 },
+  { id: 'day7-meals', text: '確認 Day 7 午餐、晚餐', day: 6 },
+  { id: 'day8-lunch', text: '確認 Day 8 午餐的松島海鮮店家', day: 7 },
+  { id: 'hirosaki-light', text: '確認弘前公園冬季櫻花點燈日期', day: 1 },
+  { id: 'jpy-cash', text: '換日幣現金（古山閣需付現 ¥79,650）', day: 4 }
 ];
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const fmt = n => n.toLocaleString('en-US');
+const deg = n => (n < 0 ? '−' + Math.abs(n) : String(n)) + '°';
 const mapUrl = q => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -359,12 +419,11 @@ const TODAY = (() => {
 let cur = 0;
 
 function buildLine() {
-  const term = '<li class="term"><span class="stop"><span class="dot"></span><span class="place">桃園</span><span class="date">TPE</span></span></li>';
-  $('lineList').innerHTML = term + DAYS.map((d, i) =>
+  $('lineList').innerHTML = DAYS.map((d, i) =>
     `<li><button type="button" class="stop" data-i="${i}" aria-label="Day ${i + 1} ${d.d} ${esc(d.stop)}">` +
     `<span class="dot"></span><span class="place">${esc(d.stop)}</span><span class="date"><span class="dp">D${i + 1} · </span>${d.d}</span>` +
     (i === TODAY ? '<span class="today">今天</span>' : '') +
-    `</button></li>`).join('') + term;
+    `</button></li>`).join('');
   $('lineList').addEventListener('click', e => {
     const b = e.target.closest('button.stop');
     if (b) show(+b.dataset.i);
@@ -379,7 +438,7 @@ function itemHTML(it) {
     return `<li class="warn">${t}<div class="c"><span class="warn-lbl">注意</span><span>${esc(it.text)}</span></div></li>`;
   }
   return `<li class="${it.kind || ''}">${t}<div class="c">` +
-    `<div class="what">${it.kind === 'opt' ? '<span class="opt-lbl">可略</span>' : ''}${esc(it.text)}${it.mode ? `<span class="mode">${esc(it.mode)}</span>` : ''}</div>` +
+    `<div class="what">${it.kind === 'opt' ? '<span class="opt-lbl">可略</span>' : ''}${it.map ? `<a class="pin" href="${mapUrl(it.map)}" target="_blank" rel="noopener">${esc(it.text)}<span class="arr">↗</span></a>` : esc(it.text)}${it.mode ? `<span class="mode">${esc(it.mode)}</span>` : ''}</div>` +
     (it.note ? `<div class="note">${esc(it.note)}</div>` : '') +
     (it.book ? `<span class="book${it.ok ? ' ok' : ''}">${esc(it.book)}</span>` : '') +
     `</div></li>`;
@@ -389,14 +448,14 @@ function stayHTML(s) {
   const chips = [[s.meal, /^不/], [s.bath, /^無/]]
     .filter(([v]) => v)
     .map(([v, neg]) => `<li${neg.test(v) ? ' class="neg"' : ''}>${esc(v)}</li>`).join('');
-  const price = s.jpy
-    ? `<span class="big">¥${fmt(s.jpy)}</span><span class="sub">NT$${fmt(s.twd)}</span>`
-    : `<span class="big">NT$${fmt(s.twd)}</span>`;
-  return `<p class="lbl">今晚住</p><h3>${esc(s.name)}</h3>` +
+  const price = (s.jpy
+    ? `<span class="big">¥${fmt(s.jpy)}</span>`
+    : `<span class="big">NT$${fmt(s.twd)}</span>`) +
+    (s.pay ? `<span class="book">${esc(s.pay)}</span>` : '');
+  return `<p class="lbl">今晚住</p><h3><a class="pin" href="${mapUrl(s.q || s.en || s.name)}" target="_blank" rel="noopener">${esc(s.name)}<span class="arr">↗</span></a></h3>` +
     (s.en ? `<p class="en">${esc(s.en)}</p>` : '') +
     (chips ? `<ul class="chips">${chips}</ul>` : '') +
-    `<p class="price">${price}</p><p class="per">三人一晚</p>` +
-    `<a class="map" href="${mapUrl(s.q || s.en || s.name)}" target="_blank" rel="noopener">在 Google 地圖開啟 ↗</a>`;
+    `<p class="price">${price}</p><p class="per">三人一晚</p>`;
 }
 
 function setNav(btn, i, dir) {
@@ -407,7 +466,7 @@ function setNav(btn, i, dir) {
     btn.onclick = () => show(i);
   } else {
     btn.disabled = true;
-    btn.textContent = dir < 0 ? '← 桃園' : '桃園 →';
+    btn.textContent = '';
     btn.onclick = null;
   }
 }
@@ -417,6 +476,53 @@ function centerStop(i) {
   if (!b) return;
   const li = b.parentElement, line = $('line');
   line.scrollTo({ left: li.offsetLeft - (line.clientWidth - li.offsetWidth) / 2, behavior: reduceMotion ? 'auto' : 'smooth' });
+}
+
+// 天氣：出發前 16 天內抓 Open-Meteo 即時預報，否則顯示 12 月平年值
+const wxSky = c => c === 0 ? '晴' : c <= 2 ? '晴時多雲' : c === 3 ? '陰' : c <= 48 ? '霧'
+  : c <= 57 ? '毛毛雨' : c <= 67 ? '雨' : c <= 77 ? '雪' : c <= 82 ? '陣雨' : c <= 86 ? '陣雪' : '雷雨';
+const wxCache = {};
+function dayISO(i) { return `2026-12-${String(4 + i).padStart(2, '0')}`; }
+function forecastable(iso) {
+  const t = new Date(); t.setHours(0, 0, 0, 0);
+  const diff = Math.round((new Date(iso + 'T00:00:00') - t) / 864e5);
+  return diff >= 0 && diff <= 15;
+}
+function fetchWx(w, iso) {
+  const key = `${w.lat},${w.lon},${iso}`;
+  if (!wxCache[key]) {
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + w.lat + '&longitude=' + w.lon +
+      '&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=Asia%2FTokyo&start_date=' + iso + '&end_date=' + iso;
+    wxCache[key] = fetch(url)
+      .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(j => {
+        const dd = j.daily || {};
+        const hi = dd.temperature_2m_max?.[0], lo = dd.temperature_2m_min?.[0], code = dd.weather_code?.[0];
+        if (hi == null || lo == null || code == null) throw new Error('no data');
+        return { hi: Math.round(hi), lo: Math.round(lo), sky: wxSky(code) };
+      })
+      .catch(e => { delete wxCache[key]; throw e; });
+  }
+  return wxCache[key];
+}
+function wxHTML(list, src) {
+  return list.map(w =>
+    `<span class="w"><b>${esc(w.p)}</b><span class="num">${deg(w.hi)} / ${deg(w.lo)}</span> ${esc(w.sky)}</span>`).join('') +
+    `<span class="src">${esc(src)}</span>`;
+}
+function renderWx(i) {
+  const d = DAYS[i], box = $('wx');
+  if (!d.wx) { box.innerHTML = ''; return; }
+  box.innerHTML = wxHTML(d.wx, '12 月平年值' + (d.wx.some(w => w.est) ? '（藏王為推估）' : ''));
+  const iso = dayISO(i);
+  if (!forecastable(iso)) return;
+  Promise.all(d.wx.map(w => fetchWx(w, iso).then(f => ({ p: w.p, ...f }))))
+    .then(list => {
+      if (cur !== i) return;
+      const now = new Date();
+      box.innerHTML = wxHTML(list, `即時預報 · ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')} 更新`);
+    })
+    .catch(() => {});
 }
 
 function show(i, opts = {}) {
@@ -435,6 +541,7 @@ function show(i, opts = {}) {
   $('route').textContent = d.route;
   $('theme').textContent = d.theme;
   $('theme').hidden = !d.theme;
+  renderWx(i);
   $('tt').innerHTML = d.items.map(itemHTML).join('');
   $('stay').hidden = !d.stay;
   $('stay').innerHTML = d.stay ? stayHTML(d.stay) : '';
@@ -448,11 +555,13 @@ function buildLodging() {
   const nights = DAYS.map((d, i) => ({ d, i })).filter(x => x.d.stay);
   $('lodgeBody').innerHTML = nights.map(({ d, i }) =>
     `<tr><td><button type="button" class="daylink" data-i="${i}">D${i + 1} · ${d.d}</button></td>` +
-    `<td>${esc(d.stay.name)}</td><td class="amt">${fmt(d.stay.twd)}</td></tr>`).join('');
-  const total = nights.reduce((s, x) => s + x.d.stay.twd, 0);
+    `<td>${esc(d.stay.name)}${d.stay.pay ? ` <span class="book">${esc(d.stay.pay)}</span>` : ''}</td>` +
+    `<td class="amt">${d.stay.twd ? fmt(d.stay.twd) : ''}</td><td class="amt">${d.stay.jpy ? fmt(d.stay.jpy) : ''}</td></tr>`).join('');
+  const sum = k => nights.reduce((s, x) => s + (x.d.stay[k] || 0), 0);
+  const twd = sum('twd'), jpy = sum('jpy');
   $('lodgeFoot').innerHTML =
-    `<tr><td colspan="2">合計 ${nights.length} 晚</td><td class="amt">NT$${fmt(total)}</td></tr>` +
-    `<tr><td colspan="2">每人（3 人）</td><td class="amt">NT$${fmt(Math.round(total / 3))}</td></tr>`;
+    `<tr><td colspan="2">合計 ${nights.length} 晚</td><td class="amt">NT$${fmt(twd)}</td><td class="amt">¥${fmt(jpy)}</td></tr>` +
+    `<tr><td colspan="2">每人（3 人）</td><td class="amt">NT$${fmt(Math.round(twd / 3))}</td><td class="amt">¥${fmt(Math.round(jpy / 3))}</td></tr>`;
 }
 
 const STORE_KEY = 'tohoku2026-todos';
@@ -484,15 +593,45 @@ function buildTodos() {
     v[box.dataset.id] = box.checked;
     saveDone(v);
     box.parentElement.classList.toggle('done', box.checked);
+    updateTodoCnt();
   });
+  updateTodoCnt();
 }
+
+function updateTodoCnt() {
+  const done = loadDone();
+  const n = TODOS.filter(t => !done[t.id]).length;
+  $('todoCnt').textContent = n ? String(n) : '';
+}
+
+// 分頁：行程／住宿／待辦
+const TABS = ['plan', 'lodging', 'todo'];
+let tab = 'plan';
+function setTab(name, opts = {}) {
+  tab = name;
+  TABS.forEach(n => {
+    $('tab-' + n).hidden = n !== name;
+    $('tabbtn-' + n).setAttribute('aria-selected', n === name ? 'true' : 'false');
+  });
+  try { history.replaceState(null, '', name === 'plan' ? '#d' + (cur + 1) : '#' + name); } catch (e) {}
+  if (opts.scroll) {
+    const panel = $('tab-' + name);
+    if (panel.getBoundingClientRect().top < $('tabs').getBoundingClientRect().bottom) {
+      panel.scrollIntoView({ behavior: 'auto', block: 'start' });
+    }
+  }
+}
+$('tabs').addEventListener('click', e => {
+  const b = e.target.closest('button[data-tab]');
+  if (b) setTab(b.dataset.tab, { scroll: true });
+});
 
 document.addEventListener('click', e => {
   const b = e.target.closest('.daylink');
-  if (b) show(+b.dataset.i, { scroll: true });
+  if (b) { setTab('plan'); show(+b.dataset.i, { scroll: true }); }
 });
 document.addEventListener('keydown', e => {
-  if (e.target.closest('input, textarea')) return;
+  if (tab !== 'plan' || e.target.closest('input, textarea')) return;
   if (e.key === 'ArrowLeft') show(cur - 1);
   if (e.key === 'ArrowRight') show(cur + 1);
 });
@@ -551,7 +690,9 @@ buildLodging();
 buildTodos();
 snowfall();
 const fromHash = /^#d([1-8])$/.exec(location.hash);
+const startTab = { '#lodging': 'lodging', '#todo': 'todo' }[location.hash];
 show(fromHash ? +fromHash[1] - 1 : (TODAY >= 0 ? TODAY : 0));
+if (startTab) setTab(startTab);
 </script>
 
 </body></html>
