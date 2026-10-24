@@ -156,6 +156,7 @@ button { touch-action: manipulation; }
 .mode { display: inline-block; margin-left: 8px; padding: 0 6px; font-size: 12px; font-weight: 700; line-height: 1.6; color: var(--accent); border: 1px solid currentColor; border-radius: 3px; vertical-align: 2px; white-space: nowrap; }
 .note { font-size: 14px; color: var(--muted); }
 .book { font-size: 13px; font-weight: 700; color: var(--warn); background: var(--warn-soft); padding: 1px 8px; border-radius: 3px; }
+.book.ok { color: var(--accent); background: var(--accent-soft); }
 .tt li.opt .c { border: 1.5px dashed var(--rule); border-radius: 6px; padding: 8px 12px; }
 .opt-lbl { display: inline-block; margin-right: 8px; padding: 0 6px; font-size: 12px; font-weight: 700; line-height: 1.6; color: var(--muted); border: 1px dashed var(--muted); border-radius: 3px; vertical-align: 2px; }
 .tt li.warn .c { flex-direction: row; gap: 8px; align-items: baseline; background: var(--warn-soft); border-radius: 6px; padding: 8px 12px; font-weight: 500; }
@@ -272,7 +273,7 @@ const DAYS = [
     items: [
       { text: '早餐自理（超商）' },
       { text: '東北新幹線 仙台 → 新青森', mode: '新幹線', book: '11/5 開放訂票' },
-      { text: '新青森取車', mode: '租車' },
+      { text: '新青森取車', mode: '租車', book: '已訂（12/5–8）', ok: true },
       { text: '弘前公園' },
       { t: '傍晚', text: '弘前公園「冬に咲くさくら」冬季櫻花點燈', note: '以 2026/27 年度活動公告為準' },
       { text: '晚餐：菊富士 本店', note: '推薦帆立の焼き味噌' },
@@ -297,7 +298,7 @@ const DAYS = [
   { d: '12/8', w: '二', stop: '銀山', sign: '銀山溫泉', roma: 'Ginzan Onsen', route: '淺蟲 → 仙台 → 銀山溫泉', theme: '雪國古街＋溫泉',
     items: [
       { kind: 'warn', text: '交通約 4 小時，不能太晚出發' },
-      { text: '新青森還車', mode: '租車' },
+      { text: '新青森還車', mode: '租車', book: '已訂（12/5–8）', ok: true },
       { text: '東北新幹線 新青森 → 仙台', mode: '新幹線', book: '11/8 開放訂票' },
       { text: 'JR 仙台 → 羽前千歲 → 大石田', mode: 'JR', book: '確認要不要先訂' },
       { text: '古山閣接駁巴士 → 銀山溫泉', mode: '巴士', book: '需先詢問並預訂' }
@@ -380,7 +381,7 @@ function itemHTML(it) {
   return `<li class="${it.kind || ''}">${t}<div class="c">` +
     `<div class="what">${it.kind === 'opt' ? '<span class="opt-lbl">可略</span>' : ''}${esc(it.text)}${it.mode ? `<span class="mode">${esc(it.mode)}</span>` : ''}</div>` +
     (it.note ? `<div class="note">${esc(it.note)}</div>` : '') +
-    (it.book ? `<span class="book">${esc(it.book)}</span>` : '') +
+    (it.book ? `<span class="book${it.ok ? ' ok' : ''}">${esc(it.book)}</span>` : '') +
     `</div></li>`;
 }
 
