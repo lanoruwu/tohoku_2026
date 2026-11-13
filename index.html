@@ -160,6 +160,8 @@ button { touch-action: manipulation; }
 .what { font-size: 16px; font-weight: 500; }
 .mode { display: inline-block; margin-left: 8px; padding: 0 6px; font-size: 12px; font-weight: 700; line-height: 1.6; color: var(--accent); border: 1px solid currentColor; border-radius: 3px; vertical-align: 2px; white-space: nowrap; }
 .note { font-size: 14px; color: var(--muted); }
+.dur { font-size: 14px; font-weight: 700; color: var(--ink); }
+.dur::before { content: "⏱ "; font-weight: 400; }
 .book { font-size: 13px; font-weight: 700; color: var(--warn); background: var(--warn-soft); padding: 1px 8px; border-radius: 3px; }
 .book.ok { color: var(--accent); background: var(--accent-soft); }
 .pin { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
@@ -294,31 +296,32 @@ const DAYS = [
     items: [
       { text: '午餐：桃園機場或機上' },
       { t: '11:50', text: '桃園機場起飛', mode: '航班' },
-      { t: '16:00', text: '抵達仙台機場，前往市區' },
+      { t: '16:00', text: '抵達仙台機場，前往市區', dur: '仙台機場線到仙台站約 25 分' },
       { text: '飯店 check-in、休息' },
       { text: '仙台車站西口 ハピナ名掛丁商店街', note: '可先在這裡購物', map: 'ハピナ名掛丁商店街 仙台' },
-      { text: '晚餐：仙台', book: '待訂' }
+      { text: '晚餐：牛たん料理 閣 名掛丁店', note: '飯店步行約 5 分鐘 · 電話 022-796-9129 · 晚餐 17:00–22:30', map: '牛たん料理 閣 名掛丁店', url: 'https://www.tablecheck.com/ja/shops/nakakecho/reserve', urlText: 'TableCheck 線上訂位', book: '待訂' }
     ],
     stay: { name: '仙台大都會飯店', en: 'Hotel Metropolitan Sendai', meal: '不含早餐', bath: '無大浴場／溫泉', twd: 5722 } },
   { d: '12/5', w: '六', stop: '弘前', sign: '弘前', roma: 'Hirosaki', route: '仙台 → 弘前 → 青森', theme: '', wx: [{ p: '弘前', lat: 40.607, lon: 140.464, hi: 4, lo: -2, sky: '雨雪天多' }, { p: '青森', lat: 40.829, lon: 140.734, hi: 5, lo: -1, sky: '雨雪天多' }],
     items: [
       { text: '早餐：自理' },
-      { text: '東北新幹線 仙台 → 新青森', mode: '新幹線', book: '11/5 開放訂票' },
-      { t: '10:00', text: '新青森取車', mode: '租車', book: '已訂（12/5–8）', ok: true },
+      { t: '08:05', text: 'はやぶさ 1 號 仙台 → 新青森', mode: '新幹線', dur: '09:49 抵達新青森', note: '6 號車 13A、13B、13C · 三人 ¥34,920', book: '已訂', ok: true },
+      { t: '10:00', text: '新青森取車', mode: '租車', note: '取車店：青森市石江 2-9-1 · 費用 ¥28,930', map: '青森県青森市石江2丁目9-1', book: '已訂（12/5–8）', ok: true },
+      { text: '開車前往弘前', mode: '開車', dur: '約 45 分' },
       { text: '午餐：弘前（待定）' },
       { text: '弘前公園', map: '弘前公園' },
       { t: '傍晚', text: '弘前公園「冬に咲くさくら」冬季櫻花點燈', note: '以 2026/27 年度活動公告為準' },
       { text: '晚餐：菊富士 本店', note: '推薦帆立の焼き味噌', map: '菊富士 本店 弘前' },
-      { t: '晚上', text: '返回青森市區', mode: '開車' }
+      { t: '晚上', text: '返回青森市區', mode: '開車', dur: '約 50 分' }
     ],
     stay: { name: '青森中央飯店', en: 'Aomori Center Hotel', meal: '含早餐', bath: '有大浴場／溫泉', jpy: 24444 } },
   { d: '12/6', w: '日', stop: '酸湯', sign: '八甲田・酸湯', roma: 'Hakkōda · Sukayu', route: '青森 → 八甲田 → 酸湯溫泉', theme: '', wx: [{ p: '酸湯', lat: 40.649, lon: 140.849, hi: -2, lo: -8, sky: '下雪天多' }],
     items: [
       { text: '早餐：飯店' },
-      { t: '09:30', text: '出發往八甲田', mode: '開車' },
+      { t: '09:30', text: '出發往八甲田', mode: '開車', dur: '到纜車站約 40 分' },
       { t: '10:30', t2: '13:00', text: '八甲田山／八甲田纜車', note: '看天候、纜車運行狀況調整', map: '八甲田ロープウェー' },
       { text: '午餐：八甲田（待定）' },
-      { t: '14:30', text: '前往酸湯溫泉', mode: '開車' },
+      { t: '14:30', text: '前往酸湯溫泉', mode: '開車', dur: '約 10 分' },
       { text: '酸湯「ヒバ千人風呂」', note: '全木造大浴場', map: '酸ヶ湯温泉' },
       { text: '晚餐：飯店' }
     ],
@@ -329,40 +332,43 @@ const DAYS = [
       { t: '早上', text: '泡千人風呂' },
       { kind: 'opt', text: '十和田湖短暫看景、拍照', note: '天候、路況都好才去，封路機率很高', map: '十和田湖' },
       { text: '午餐：途中（待定）' },
+      { text: '開車前往淺蟲', mode: '開車', dur: '直行約 1 小時；繞十和田湖約 3 小時' },
       { text: '淺蟲海岸散策，看陸奧灣', map: '浅虫温泉 海岸' },
       { text: '晚餐：飯店' }
     ],
     stay: { name: '絕景之宿 淺蟲櫻花觀光酒店', en: 'Grand Views Asamushi Sakura Kanko Hotel', meal: '含早晚餐', bath: '有大浴場／溫泉', jpy: 45920 } },
   { d: '12/8', w: '二', stop: '銀山', sign: '銀山溫泉', roma: 'Ginzan Onsen', route: '淺蟲 → 仙台 → 銀山溫泉', theme: '', wx: [{ p: '銀山', lat: 38.571, lon: 140.530, hi: 4, lo: -2, sky: '雨雪天多' }],
     items: [
-      { kind: 'warn', text: '交通約 4 小時，不能太晚出發' },
+      { kind: 'warn', text: '純交通約 5 小時，加上等車、轉乘會更久，不能太晚出發' },
       { text: '早餐：飯店' },
-      { t: '09:00', text: '新青森還車', mode: '租車', book: '已訂（12/5–8）', ok: true },
-      { text: '東北新幹線 新青森 → 仙台', mode: '新幹線', book: '11/8 開放訂票' },
-      { text: '午餐：移動途中（待定）' },
-      { text: 'JR 仙台 → 羽前千歲 → 大石田', mode: 'JR', book: '確認要不要先訂' },
-      { text: '古山閣接駁巴士 → 銀山溫泉', mode: '巴士', book: '需先詢問並預訂' },
+      { t: '09:00', text: '新青森還車', mode: '租車', dur: '淺蟲開到新青森約 30 分，08:20 前出發', note: '還車店：青森市石江 2-9-1', map: '青森県青森市石江2丁目9-1', book: '已訂（12/5–8）', ok: true },
+      { t: '09:53', text: 'はやぶさ 14 號 新青森 → 仙台', mode: '新幹線', dur: '11:29 抵達仙台', note: '6 號車 9A、9B、9C · 三人 ¥34,320', book: '已訂', ok: true },
+      { text: '午餐：移動途中（待定）', note: '仙台站轉車只有 23 分，可買車站便當在車上吃' },
+      { t: '11:52', text: 'JR 仙山線 仙台 → 羽前千歲', mode: 'JR', dur: '13:21 抵達', note: '普通車免指定席，現場買票或刷 Suica，建議早點排隊' },
+      { t: '13:38', text: 'JR 奧羽本線 羽前千歲 → 大石田', mode: 'JR', dur: '14:21 抵達' },
+      { t: '15:30', text: '古山閣接駁巴士 → 銀山溫泉', mode: '巴士', dur: '約 40 分', note: '大型行李要寄放在大石田站置物櫃', book: '已訂', ok: true },
       { text: '晚餐：飯店' }
     ],
     stay: { name: '古山閣', meal: '含早晚餐', bath: '有溫泉', jpy: 79650, pay: '現金付款', q: '銀山温泉 古山閣' } },
   { d: '12/9', w: '三', stop: '藏王', sign: '藏王溫泉', roma: 'Zaō Onsen', route: '銀山溫泉 → 藏王溫泉', theme: '', wx: [{ p: '藏王', lat: 38.167, lon: 140.397, hi: 2, lo: -5, sky: '下雪天多', est: true }],
     items: [
       { text: '早餐：飯店' },
-      { t: '上午', text: '銀山溫泉散策、泡湯', map: '銀山温泉' },
-      { text: '前往藏王溫泉', mode: 'JR' },
-      { text: '五感の湯接駁車 → 藏王溫泉', mode: '巴士', book: '需先詢問' },
+      { t: '早上', text: '銀山溫泉散策、泡湯', map: '銀山温泉' },
+      { t: '09:40', text: '古山閣接駁巴士 → 大石田站', mode: '巴士', dur: '約 40 分', book: '已訂', ok: true },
+      { text: 'JR 大石田 → 山形', mode: 'JR', dur: 'つばさ約 40 分' },
+      { text: '巴士 山形站 → 藏王溫泉', mode: '巴士', dur: '約 40 分', note: '在山形站買巴士來回＋纜車套票' },
       { text: '午餐：待定' },
       { t: '下午', kind: 'opt', text: '藏王樹冰、搭纜車看雪景', note: '看天候和纜車，天候不好就放棄', map: '蔵王ロープウェイ' },
       { text: '藏王溫泉街散策、泡湯', map: '蔵王温泉' },
       { text: '晚餐：飯店' }
     ],
-    stay: { name: '藏王溫泉 五感の湯', meal: '含早晚餐', twd: 9976, q: '蔵王温泉 五感の湯' } },
+    stay: { name: '藏王溫泉 五感の湯つるや', meal: '含早晚餐', jpy: 49500, q: '蔵王温泉 五感の湯つるや' } },
   { d: '12/10', w: '四', stop: '仙台', sign: '仙台', roma: 'Sendai', route: '藏王 → 仙台', theme: '', wx: [{ p: '仙台', lat: 38.260, lon: 140.882, hi: 8, lo: 1, sky: '晴天多' }],
     items: [
       { text: '早餐：飯店' },
-      { t: '上午', text: '藏王溫泉街散策、足湯', map: '蔵王温泉 足湯' },
-      { text: '五感の湯接駁車（回程）', mode: '巴士', book: '需先詢問' },
-      { text: '返回仙台', mode: 'JR' },
+      { t: '早上', text: '藏王溫泉街散策、足湯', map: '蔵王温泉 足湯' },
+      { t: '10:00', text: '退房，巴士 藏王溫泉 → 山形站', mode: '巴士', dur: '約 40 分', note: '用套票的回程' },
+      { text: 'JR 山形 → 仙台', mode: 'JR', dur: '仙山線約 1.5 小時' },
       { text: '午餐：待定' },
       { t: '下午', text: '仙台車站周邊逛街購物', map: '仙台駅' },
       { text: '晚餐：待定' }
@@ -371,11 +377,11 @@ const DAYS = [
   { d: '12/11', w: '五', stop: '松島', sign: '松島', roma: 'Matsushima', route: '仙台 → 松島 → 台灣', theme: '', wx: [{ p: '松島', lat: 38.371, lon: 141.060, hi: 8, lo: 1, sky: '晴天多' }],
     items: [
       { text: '早餐：自理' },
-      { text: '仙台出發前往松島' },
+      { text: '仙台出發前往松島', mode: 'JR', dur: '仙石線約 40 分' },
       { text: '松島灣散策、五大堂、松島商店街', note: '買伴手禮', map: '松島 五大堂' },
       { kind: 'opt', text: '松島灣遊覽船（約 50 分鐘）', note: '看媽媽體力，不舒服就不搭', map: '松島島巡り観光船' },
       { text: '午餐：松島海鮮' },
-      { t: '12:30', t2: '14:00', text: '離開松島，前往仙台機場' },
+      { t: '12:30', t2: '14:00', text: '離開松島，前往仙台機場', dur: '經仙台站轉機場線約 1–1.5 小時' },
       { t: '17:25', text: '仙台機場起飛', mode: '航班' },
       { t: '20:35', text: '抵達桃園', mode: '航班' }
     ],
@@ -383,12 +389,7 @@ const DAYS = [
 ];
 
 const TODOS = [
-  { id: 'shinkansen-out', text: '訂新幹線 仙台 → 新青森', day: 1, opens: '2026-11-05' },
-  { id: 'shinkansen-back', text: '訂新幹線 新青森 → 仙台', day: 4, opens: '2026-11-08' },
-  { id: 'jr-oishida', text: '確認 JR 仙台 → 大石田要不要先訂', day: 4 },
-  { id: 'kozankaku-bus', text: '預約古山閣接駁巴士', day: 4 },
-  { id: 'zao-shuttle', text: '詢問五感の湯接駁車（Day 6 去程、Day 7 回程）', day: 5 },
-  { id: 'day1-dinner', text: '訂 Day 1 晚餐', day: 0 },
+  { id: 'day1-dinner', text: '訂 Day 1 晚餐：閣 名掛丁店（TableCheck 線上訂位）', day: 0 },
   { id: 'day2-lunch', text: '確認 Day 2 午餐（弘前）', day: 1 },
   { id: 'day3-lunch', text: '確認 Day 3 午餐（八甲田）', day: 2 },
   { id: 'day4-lunch', text: '確認 Day 4 午餐（往淺蟲途中）', day: 3 },
@@ -439,7 +440,9 @@ function itemHTML(it) {
   }
   return `<li class="${it.kind || ''}">${t}<div class="c">` +
     `<div class="what">${it.kind === 'opt' ? '<span class="opt-lbl">可略</span>' : ''}${it.map ? `<a class="pin" href="${mapUrl(it.map)}" target="_blank" rel="noopener">${esc(it.text)}<span class="arr">↗</span></a>` : esc(it.text)}${it.mode ? `<span class="mode">${esc(it.mode)}</span>` : ''}</div>` +
+    (it.dur ? `<div class="dur">${esc(it.dur)}</div>` : '') +
     (it.note ? `<div class="note">${esc(it.note)}</div>` : '') +
+    (it.url ? `<div class="note"><a class="pin" href="${esc(it.url)}" target="_blank" rel="noopener">${esc(it.urlText || '開啟連結')}<span class="arr">↗</span></a></div>` : '') +
     (it.book ? `<span class="book${it.ok ? ' ok' : ''}">${esc(it.book)}</span>` : '') +
     `</div></li>`;
 }
