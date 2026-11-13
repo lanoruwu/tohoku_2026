@@ -163,7 +163,9 @@ button { touch-action: manipulation; }
 .dur { font-size: 14px; font-weight: 700; color: var(--ink); }
 .dur::before { content: "⏱ "; font-weight: 400; }
 .book { font-size: 13px; font-weight: 700; color: var(--warn); background: var(--warn-soft); padding: 1px 8px; border-radius: 3px; }
-.book.ok { color: var(--accent); background: var(--accent-soft); }
+.tags { white-space: nowrap; }
+.st { display: inline-block; width: 18px; height: 18px; margin-left: 8px; vertical-align: -3px; }
+.st svg { display: block; width: 100%; height: 100%; }
 .pin { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .pin .arr { margin-left: 3px; font-size: .75em; }
 @media (hover: hover) { .pin:hover { text-decoration-thickness: 2px; } }
@@ -306,11 +308,11 @@ const DAYS = [
     items: [
       { text: '早餐：自理' },
       { t: '08:05', text: 'はやぶさ 1 號 仙台 → 新青森', mode: '新幹線', dur: '09:49 抵達新青森', note: '6 號車 13A、13B、13C · 三人 ¥34,920', book: '已訂', ok: true },
-      { t: '10:00', text: '新青森取車', mode: '租車', note: '取車店：青森市石江 2-9-1 · 費用 ¥28,930', map: '青森県青森市石江2丁目9-1', book: '已訂（12/5–8）', ok: true },
+      { t: '10:00', text: '新青森取車', mode: '租車', note: '取車店：青森市石江 2-9-1 · 費用 ¥28,930', map: '青森県青森市石江2丁目9-1', book: '已訂', ok: true },
       { text: '開車前往弘前', mode: '開車', dur: '約 45 分' },
       { text: '午餐：弘前（待定）' },
-      { text: '弘前公園', map: '弘前公園' },
-      { t: '傍晚', text: '弘前公園「冬に咲くさくら」冬季櫻花點燈', note: '以 2026/27 年度活動公告為準' },
+      { text: '弘前公園', map: '弘前公園', note: '停車：弘前市立觀光館地下停車場（24 小時，第一小時免費）。市役所停車場 21:30 後車開不出來' },
+      { t: '傍晚', text: '弘前公園「冬に咲くさくら」冬季櫻花點燈', note: '暫定 12/1–2/28，日落～21:30，尚未正式公告 · 只點亮外濠（追手門與弘前市役所本廳舍之間），上一季公園內其他地方不點燈', map: '弘前公園 追手門' },
       { text: '晚餐：菊富士 本店', note: '推薦帆立の焼き味噌', map: '菊富士 本店 弘前' },
       { t: '晚上', text: '返回青森市區', mode: '開車', dur: '約 50 分' }
     ],
@@ -322,7 +324,7 @@ const DAYS = [
       { t: '10:30', t2: '13:00', text: '八甲田山／八甲田纜車', note: '看天候、纜車運行狀況調整', map: '八甲田ロープウェー' },
       { text: '午餐：八甲田（待定）' },
       { t: '14:30', text: '前往酸湯溫泉', mode: '開車', dur: '約 10 分' },
-      { text: '酸湯「ヒバ千人風呂」', note: '全木造大浴場', map: '酸ヶ湯温泉' },
+      { text: '酸湯「ヒバ千人風呂」', note: '就在飯店內，全木造混浴大浴場 · 女性專用 08:00–09:00、20:00–21:00 · 湯あみ着要在現場買或租，不能自備 · 另有男女分開的「玉の湯」', map: '酸ヶ湯温泉' },
       { text: '晚餐：飯店' }
     ],
     stay: { name: '酸湯溫泉旅館', en: 'Sukayu Onsen Ryokan', meal: '含早晚餐', bath: '有大浴場／溫泉', jpy: 35211 } },
@@ -341,9 +343,10 @@ const DAYS = [
     items: [
       { kind: 'warn', text: '純交通約 5 小時，加上等車、轉乘會更久，不能太晚出發' },
       { text: '早餐：飯店' },
-      { t: '09:00', text: '新青森還車', mode: '租車', dur: '淺蟲開到新青森約 30 分，08:20 前出發', note: '還車店：青森市石江 2-9-1', map: '青森県青森市石江2丁目9-1', book: '已訂（12/5–8）', ok: true },
+      { t: '08:00', text: '從淺蟲出發', mode: '開車', dur: '開到新青森約 30 分' },
+      { t: '09:00', text: '新青森還車', mode: '租車', note: '還車店：青森市石江 2-9-1', map: '青森県青森市石江2丁目9-1', book: '已訂', ok: true },
       { t: '09:53', text: 'はやぶさ 14 號 新青森 → 仙台', mode: '新幹線', dur: '11:29 抵達仙台', note: '6 號車 9A、9B、9C · 三人 ¥34,320', book: '已訂', ok: true },
-      { text: '午餐：移動途中（待定）', note: '仙台站轉車只有 23 分，可買車站便當在車上吃' },
+      { text: '午餐：車站或超商外帶，在車上吃', note: '仙台站轉車只有 23 分' },
       { t: '11:52', text: 'JR 仙山線 仙台 → 羽前千歲', mode: 'JR', dur: '13:21 抵達', note: '普通車免指定席，現場買票或刷 Suica，建議早點排隊' },
       { t: '13:38', text: 'JR 奧羽本線 羽前千歲 → 大石田', mode: 'JR', dur: '14:21 抵達' },
       { t: '15:30', text: '古山閣接駁巴士 → 銀山溫泉', mode: '巴士', dur: '約 40 分', note: '大型行李要寄放在大石田站置物櫃', book: '已訂', ok: true },
@@ -393,11 +396,10 @@ const TODOS = [
   { id: 'day2-lunch', text: '確認 Day 2 午餐（弘前）', day: 1 },
   { id: 'day3-lunch', text: '確認 Day 3 午餐（八甲田）', day: 2 },
   { id: 'day4-lunch', text: '確認 Day 4 午餐（往淺蟲途中）', day: 3 },
-  { id: 'day5-lunch', text: '確認 Day 5 午餐（移動途中）', day: 4 },
   { id: 'day6-lunch', text: '確認 Day 6 午餐', day: 5 },
   { id: 'day7-meals', text: '確認 Day 7 午餐、晚餐', day: 6 },
   { id: 'day8-lunch', text: '確認 Day 8 午餐的松島海鮮店家', day: 7 },
-  { id: 'hirosaki-light', text: '確認弘前公園冬季櫻花點燈日期', day: 1 },
+  { id: 'hirosaki-light', text: '確認冬季櫻花點燈正式公告（目前暫定 12/1–2/28）', day: 1 },
   { id: 'jpy-cash', text: '換日幣現金（古山閣需付現 ¥79,650）', day: 4 }
 ];
 
@@ -431,6 +433,15 @@ function buildLine() {
   });
 }
 
+// 預訂狀態圖示：已訂＝打勾，未訂＝時鐘（文字放在 title 給滑鼠和螢幕閱讀器）
+function statusIcon(it) {
+  const svg = it.ok
+    ? '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="var(--accent)"/><path d="M5.5 10.4l3 3 6-6.4" fill="none" stroke="var(--surface)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    : '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.6" fill="none" stroke="var(--warn)" stroke-width="2"/><path d="M10 5.6V10l3 2" fill="none" stroke="var(--warn)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const label = it.ok ? '已預訂' : '還沒訂';
+  return `<span class="st" role="img" aria-label="${label}" title="${label}">${svg}</span>`;
+}
+
 function itemHTML(it) {
   const t = it.t
     ? `<div class="t${/\d/.test(it.t) ? '' : ' word'}">${esc(it.t)}${it.t2 ? `<small>–${esc(it.t2)}</small>` : ''}</div>`
@@ -439,11 +450,10 @@ function itemHTML(it) {
     return `<li class="warn">${t}<div class="c"><span class="warn-lbl">注意</span><span>${esc(it.text)}</span></div></li>`;
   }
   return `<li class="${it.kind || ''}">${t}<div class="c">` +
-    `<div class="what">${it.kind === 'opt' ? '<span class="opt-lbl">可略</span>' : ''}${it.map ? `<a class="pin" href="${mapUrl(it.map)}" target="_blank" rel="noopener">${esc(it.text)}<span class="arr">↗</span></a>` : esc(it.text)}${it.mode ? `<span class="mode">${esc(it.mode)}</span>` : ''}</div>` +
+    `<div class="what">${it.kind === 'opt' ? '<span class="opt-lbl">可略</span>' : ''}${it.map ? `<a class="pin" href="${mapUrl(it.map)}" target="_blank" rel="noopener">${esc(it.text)}<span class="arr">↗</span></a>` : esc(it.text)}${it.mode || it.book ? `<span class="tags">${it.mode ? `<span class="mode">${esc(it.mode)}</span>` : ''}${it.book ? statusIcon(it) : ''}</span>` : ''}</div>` +
     (it.dur ? `<div class="dur">${esc(it.dur)}</div>` : '') +
     (it.note ? `<div class="note">${esc(it.note)}</div>` : '') +
     (it.url ? `<div class="note"><a class="pin" href="${esc(it.url)}" target="_blank" rel="noopener">${esc(it.urlText || '開啟連結')}<span class="arr">↗</span></a></div>` : '') +
-    (it.book ? `<span class="book${it.ok ? ' ok' : ''}">${esc(it.book)}</span>` : '') +
     `</div></li>`;
 }
 
