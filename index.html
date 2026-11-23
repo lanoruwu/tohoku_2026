@@ -114,7 +114,7 @@ button { touch-action: manipulation; }
 .stop[aria-current] .date { color: var(--ink); }
 
 /* 站名牌 */
-.day { display: flex; flex-direction: column; gap: 18px; scroll-margin-top: 72px; }
+.day { display: flex; flex-direction: column; gap: 18px; scroll-margin-top: 72px; touch-action: pan-y pinch-zoom; }
 .sign {
   --cap: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 16' preserveAspectRatio='none'%3E%3Cpath d='M0 16C2 10 8 8 14 9C22 4 34 4 42 8C52 3 66 3 76 7C88 2 102 3 112 8C124 4 138 3 148 7C160 2 176 3 186 8C196 4 210 4 220 8C228 6 236 9 240 16Z'/%3E%3C/svg%3E");
   position: relative; background: var(--sign-bg); color: var(--sign-ink); border: 1px solid var(--sign-edge); border-radius: 6px; text-align: center;
@@ -570,6 +570,9 @@ function show(i, opts = {}) {
   centerStop(i);
   try { history.replaceState(null, '', '#d' + (i + 1)); } catch (e) {}
   if (opts.scroll) $('day').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+  if (opts.dir && !reduceMotion && $('day').animate) {
+    $('day').animate([{ transform: `translateX(${opts.dir * 32}px)`, opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 220, easing: 'ease-out' });
+  }
 }
 
 function buildLodging() {
@@ -653,9 +656,26 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('keydown', e => {
   if (tab !== 'plan' || e.target.closest('input, textarea')) return;
-  if (e.key === 'ArrowLeft') show(cur - 1);
-  if (e.key === 'ArrowRight') show(cur + 1);
+  if (e.key === 'ArrowLeft') show(cur - 1, { dir: -1 });
+  if (e.key === 'ArrowRight') show(cur + 1, { dir: 1 });
 });
+
+// 手機左右滑動切換日期：水平位移夠大、且明顯比垂直位移大才算，避免跟上下捲動搶手勢
+let swipe = null;
+$('day').addEventListener('touchstart', e => {
+  swipe = e.touches.length === 1 ? { x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now() } : null;
+}, { passive: true });
+$('day').addEventListener('touchend', e => {
+  if (!swipe || e.changedTouches.length !== 1) return;
+  const dx = e.changedTouches[0].clientX - swipe.x, dy = e.changedTouches[0].clientY - swipe.y;
+  const quick = Date.now() - swipe.t < 800;
+  swipe = null;
+  if (!quick || Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+  const next = dx < 0 ? cur + 1 : cur - 1;
+  if (next < 0 || next >= DAYS.length) return;
+  show(next, { dir: dx < 0 ? 1 : -1, scroll: $('day').getBoundingClientRect().top < 0 });
+}, { passive: true });
+$('day').addEventListener('touchcancel', () => { swipe = null; }, { passive: true });
 
 // 頁首的小雪：數量少、落得慢；減少動態時只畫靜止的雪點
 function snowfall() {
